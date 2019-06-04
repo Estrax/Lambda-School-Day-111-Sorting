@@ -75,5 +75,47 @@ def merge_sort_in_place(arr, l, r):
 # STRETCH: implement the Timsort function below
 # hint: check out https://github.com/python/cpython/blob/master/Objects/listsort.txt
 def timsort(arr):
+    if len(arr) < 64:
+        for i in range(len(arr)):
+            key = arr[i]
+            j = i - 1
+            while j >= 0 and key <= arr[j]:
+                arr[j+1] = arr[j]
+                j -= 1
+            arr[j+1] = key
+    else:
+        runs = []
+        sorted_runs = []
+        arr_len = len(arr)
+        new_run = [arr[0]]
+
+        for i in range(1, arr_len):
+            if i == arr_len-1:
+                new_run.append(arr[i])
+                runs.append(new_run)
+                break
+            if arr[i] < arr[i-1]:
+                if not new_run:
+                    runs.append([arr[i]])
+                    new_run.append(arr[i])
+                else:
+                    runs.append(new_run)
+                    new_run = []
+            else:
+                new_run.append(arr[i])
+        for run in runs:
+            for i in range(len(run)):
+                key = run[i]
+                j = i - 1
+                while j >= 0 and key <= run[j]:
+                    run[j+1] = run[j]
+                    j -= 1
+                run[j+1] = key
+            sorted_runs.append(run)
+
+        sorted_arr = []
+        for run in sorted_runs:
+            sorted_arr = merge(sorted_arr, run)
+        return sorted_arr
 
     return arr
